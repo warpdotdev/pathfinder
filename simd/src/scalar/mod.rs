@@ -584,7 +584,7 @@ impl Mul<I32x2> for I32x2 {
 // Four 32-bit signed integers
 
 #[derive(Clone, Copy, Default, Debug, PartialEq)]
-pub struct I32x4([i32; 4]);
+pub struct I32x4(pub [i32; 4]);
 
 impl I32x4 {
     #[inline]
