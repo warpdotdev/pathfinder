@@ -268,12 +268,28 @@ impl F32x4 {
 
     #[inline]
     pub fn floor(self) -> F32x4 {
-        unsafe { F32x4(x86::_mm_floor_ps(self.0)) }
+        unsafe {
+            if std::is_x86_feature_detected!("sse4.1") {
+                F32x4(x86::_mm_floor_ps(self.0))
+            } else {
+                F32x4(std::mem::transmute(
+                    crate::scalar::F32x4(std::mem::transmute(self.0)).floor(),
+                ))
+            }
+        }
     }
 
     #[inline]
     pub fn ceil(self) -> F32x4 {
-        unsafe { F32x4(x86::_mm_ceil_ps(self.0)) }
+        unsafe {
+            if std::is_x86_feature_detected!("sse4.1") {
+                F32x4(x86::_mm_ceil_ps(self.0))
+            } else {
+                F32x4(std::mem::transmute(
+                    crate::scalar::F32x4(std::mem::transmute(self.0)).ceil(),
+                ))
+            }
+        }
     }
 
     #[inline]
@@ -702,12 +718,30 @@ impl I32x4 {
 
     #[inline]
     pub fn max(self, other: I32x4) -> I32x4 {
-        unsafe { I32x4(x86::_mm_max_epi32(self.0, other.0)) }
+        unsafe {
+            if std::is_x86_feature_detected!("sse4.1") {
+                I32x4(x86::_mm_max_epi32(self.0, other.0))
+            } else {
+                I32x4(std::mem::transmute(
+                    crate::scalar::I32x4(std::mem::transmute(self.0))
+                        .max(std::mem::transmute(other.0)),
+                ))
+            }
+        }
     }
 
     #[inline]
     pub fn min(self, other: I32x4) -> I32x4 {
-        unsafe { I32x4(x86::_mm_min_epi32(self.0, other.0)) }
+        unsafe {
+            if std::is_x86_feature_detected!("sse4.1") {
+                I32x4(x86::_mm_min_epi32(self.0, other.0))
+            } else {
+                I32x4(std::mem::transmute(
+                    crate::scalar::I32x4(std::mem::transmute(self.0))
+                        .min(std::mem::transmute(other.0)),
+                ))
+            }
+        }
     }
 
     // Packed comparisons
@@ -777,7 +811,16 @@ impl Mul<I32x4> for I32x4 {
     type Output = I32x4;
     #[inline]
     fn mul(self, other: I32x4) -> I32x4 {
-        unsafe { I32x4(x86::_mm_mullo_epi32(self.0, other.0)) }
+        unsafe {
+            if std::is_x86_feature_detected!("sse4.1") {
+                I32x4(x86::_mm_mullo_epi32(self.0, other.0))
+            } else {
+                I32x4(std::mem::transmute(
+                    crate::scalar::I32x4(std::mem::transmute(self.0))
+                        * std::mem::transmute(other.0),
+                ))
+            }
+        }
     }
 }
 
