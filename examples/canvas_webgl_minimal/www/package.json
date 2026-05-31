@@ -35,5 +35,8 @@
   },
   "dependencies": {
     "canvas_webgl_minimal": "file:../pkg"
+  },
+  "overrides": {
+    "tar": "7.5.11"
   }
 }
